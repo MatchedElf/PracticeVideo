@@ -93,6 +93,11 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     //auto url = URL(f1);
     //auto result = vid->load(url);
     //
+    Image speakerImage = ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("speaker.png"));
+    speaker = new ImageComponent();
+    addAndMakeVisible(speaker);
+    speaker->setImage(speakerImage);
+    //
     slid = new Slider(Slider::LinearHorizontal, Slider::TextBoxLeft);
     slid->setTextBoxStyle(Slider::TextBoxLeft, true, 50, 20);
     slid->setNumDecimalPlacesToDisplay(0);
@@ -151,6 +156,7 @@ MainComponent::~MainComponent(void)
     deleteAndZero(slid);
     deleteAndZero(vol);
     deleteAndZero(speed);
+    deleteAndZero(speaker);
     setLookAndFeel(nullptr);
     myChooser.reset();
     queue.clear();
@@ -199,7 +205,8 @@ void MainComponent::resized(void)
     pop1->setBounds(propWv1 + propW8 - propH1, propH8, propH1, propH1);
     //slid->setValue(vid->getPlayPosition());
     slid->setBounds(propWv1, propH1 * 8 - dist, propW8, propH1);
-    vol->setBounds(propW1 * 9 + dist, centreH - propH6 / 4, propH1, propH6 / 2);
+    vol->setBounds(propW1 * 9, centreH - propH6 / 4, propH1, propH6 / 2);
+    speaker->setBounds(propW1 * 9 + dist / 3, centreH - propH6 / 3 - dist - dist / 4, propH1, propH1);
     speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH8, 2 * propH1, propH1);
     vid->setBounds(propWv1, propH1, propW8, propH6);
     //myLayout->layOutComponents(comps, 3, 150, 350, proportionOfWidth(0.5), proportionOfHeight(0.1), false, true);

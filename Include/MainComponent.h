@@ -26,6 +26,7 @@ private:
     bool check = false;
     Label* MainLabel;
     Label* title;
+    ImageComponent* speaker;
     ImageButton* play1;
     ImageButton* pause;
     ImageButton* front1;

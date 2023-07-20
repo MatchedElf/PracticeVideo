@@ -3,6 +3,7 @@
 //
 MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), play1(0)
 {
+    setLookAndFeel(&LaF);
     setOpaque(true);
     MainLabel = new Label("First label", "FONT LOGO");
     addAndMakeVisible(MainLabel);
@@ -130,6 +131,7 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     myLayout->setItemLayout(0, 10, 100, 50);
     myLayout->setItemLayout(1, 10, 100, 50);
     myLayout->setItemLayout(2, 10, 100, 50);
+    //LaF.createSliderTextBox(*slid);
 }
 //
 MainComponent::~MainComponent(void)
@@ -149,6 +151,7 @@ MainComponent::~MainComponent(void)
     deleteAndZero(slid);
     deleteAndZero(vol);
     deleteAndZero(speed);
+    setLookAndFeel(nullptr);
     myChooser.reset();
     queue.clear();
 }

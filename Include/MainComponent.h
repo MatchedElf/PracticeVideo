@@ -1,6 +1,7 @@
 #pragma once
 //
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "../Include/CustomLaf.h"
 //
 class MainComponent : public Component, public Button::Listener, public Slider::Listener, public Timer
 {
@@ -18,6 +19,7 @@ public:
     void timerCallback();
     //
 private:
+    CustomLaF LaF;
     std::vector<File> queue;
     int curI = -1;
     std::unique_ptr<FileChooser> myChooser;

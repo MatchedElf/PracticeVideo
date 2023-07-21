@@ -1,7 +1,6 @@
 #pragma once
 //
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../Include/MySlider.h"
 /*!
     \brief Класс, хранящий главную компоненту со всеми элементами программы
 

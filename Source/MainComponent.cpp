@@ -1,9 +1,12 @@
 #include "../Include/MainComponent.h"
 #include <iostream>
 //
-MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), play1(0)
+MainComponent::MainComponent(void)
+    : Component("MainComponent"),
+    MainLabel(0), 
+    play1(0)
 {
-    setLookAndFeel(&LaF);
+    //setLookAndFeel(&LaF);
     setOpaque(true);
     MainLabel = new Label("First label", "FONT LOGO");
     addAndMakeVisible(MainLabel);
@@ -48,12 +51,14 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     addAndMakeVisible(front1);
     front1->setImages(false, true, true, frontLogo, 1, Colours::transparentWhite, frontLogo, 0.3, Colours::transparentWhite, frontLogo, 1, Colours::transparentWhite);
     front1->addListener(this);
+    front1->setEnabled(false);
     //
     Image backLogo = ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("backBut.png"));
     back1 = new ImageButton();
     addAndMakeVisible(back1);
     back1->setImages(false, true, true, backLogo, 1, Colours::transparentWhite, backLogo, 0.3, Colours::transparentWhite, backLogo, 1, Colours::transparentWhite);
     back1->addListener(this);
+    back1->setEnabled(false);
     //
     //pop = new TextButton("Popup menu");
     //addAndMakeVisible(pop);
@@ -81,7 +86,7 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     Image chLogo = ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("addBut.png"));
     chFile1 = new ImageButton();
     //addAndMakeVisible(chFile1);
-    chFile1->setImages(false, true, true, chLogo, 0.6, Colours::white, chLogo, 0.3, Colours::white, chLogo, 1, Colours::white);
+    chFile1->setImages(false, true, true, chLogo, 1, Colours::transparentWhite, chLogo, 0.3, Colours::transparentWhite, chLogo, 1, Colours::transparentWhite);
     chFile1->addListener(this);
     //
     vid = new VideoComponent(true);
@@ -98,7 +103,8 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     addAndMakeVisible(speaker);
     speaker->setImage(speakerImage);
     //
-    slid = new Slider(Slider::LinearHorizontal, Slider::TextBoxLeft);
+    slid = new Slider();
+    slid->setSliderStyle(Slider::LinearHorizontal);
     slid->setTextBoxStyle(Slider::TextBoxLeft, true, 50, 20);
     slid->setNumDecimalPlacesToDisplay(0);
     slid->addListener(this);
@@ -106,6 +112,7 @@ MainComponent::MainComponent(void) : Component("MainComponent"), MainLabel(0), p
     slid->setColour(Slider::thumbColourId, Colour::fromRGB(198, 89, 28));
     slid->setColour(Slider::textBoxOutlineColourId, Colour::fromFloatRGBA(0, 0, 0, 0));
     addAndMakeVisible(slid);
+    //slid->setLookAndFeel(LaF);
     //
     vol = new Slider(Slider::LinearVertical, Slider::TextBoxBelow);
     vol->setTextBoxStyle(Slider::NoTextBox, true, 50, 20);
@@ -157,7 +164,7 @@ MainComponent::~MainComponent(void)
     deleteAndZero(vol);
     deleteAndZero(speed);
     deleteAndZero(speaker);
-    setLookAndFeel(nullptr);
+    //slid->setLookAndFeel(nullptr);
     myChooser.reset();
     queue.clear();
 }
@@ -206,7 +213,7 @@ void MainComponent::resized(void)
     //slid->setValue(vid->getPlayPosition());
     slid->setBounds(propWv1, propH1 * 8 - dist, propW8, propH1);
     vol->setBounds(propW1 * 9, centreH - propH6 / 4, propH1, propH6 / 2);
-    speaker->setBounds(propW1 * 9 + dist / 3, centreH - propH6 / 3 - dist - dist / 4, propH1, propH1);
+    speaker->setBounds(propW1 * 9 + dist / 2, centreH - propH6 / 3 - dist - dist / 4, propH1, propH1);
     speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH8, 2 * propH1, propH1);
     vid->setBounds(propWv1, propH1, propW8, propH6);
     //myLayout->layOutComponents(comps, 3, 150, 350, proportionOfWidth(0.5), proportionOfHeight(0.1), false, true);
@@ -229,21 +236,25 @@ void MainComponent::buttonClicked(Button* butt)
         }
     }
     else if ( (butt == back1) && (curI > 0) ) {
+        front1->setEnabled(true);
         play1->setVisible(true);
         pause->setVisible(false);
         curI--;
         title->setText(queue[curI].getFileName(), dontSendNotification);
         vid->load(queue[curI]);
         slid->setValue(0);
+        if (curI == 0) back1->setEnabled(false);
         VideoProcessing();
     }
     else if((butt == front1) && (curI < (queue.size() - 1) ) ){
+        back1->setEnabled(true);
         play1->setVisible(true);
         pause->setVisible(false);
         curI++;
         title->setText(queue[curI].getFileName(), dontSendNotification);
         vid->load(queue[curI]);
         slid->setValue(0);
+        if (curI == (queue.size() - 1)) front1->setEnabled(false);
         VideoProcessing();
 
     }
@@ -253,12 +264,27 @@ void MainComponent::buttonClicked(Button* butt)
     else if (butt == pop1){
         MainLabel->setColour(Label::textColourId, juce::Colours::white);
         PopupMenu menu1;
-        menu1.addItem(PopupMenu::Item("Item"));
-        menu1.addItem(PopupMenu::Item("Item2"));
+        int test = queue.size();
+        for (int i = 1; i <= queue.size(); i++) {
+            menu1.addItem(i, queue[i - 1].getFileName());
+
+        }
         menu1.showMenuAsync(PopupMenu::Options().withMinimumWidth(100)
-            .withMaximumNumColumns(3)
             .withPreferredPopupDirection(PopupMenu::Options::PopupDirection(0))
-            .withTargetComponent(pop1));
+            .withTargetComponent(pop1),
+            [this](int result) {
+                back1->setEnabled(true);
+                front1->setEnabled(true);
+                play1->setVisible(true);
+                pause->setVisible(false);
+                curI = result - 1;
+                title->setText(queue[curI].getFileName(), dontSendNotification);
+                vid->load(queue[curI]);
+                slid->setValue(0);
+                if (curI == 0) back1->setEnabled(false);
+                if(curI == (queue.size() - 1)) front1->setEnabled(false);
+                VideoProcessing();
+            });
     }
 }
 //
@@ -287,6 +313,7 @@ void MainComponent::VideoProcessing()
     //
     double sec = vid->getVideoDuration();
     slid->setRange(0, sec, 1);
+    slid->setValue(0);
     //
     resized();
 }
@@ -315,8 +342,10 @@ void MainComponent::loadFile()
         title->setText(choosedFile.getFileName(), dontSendNotification);
         if (result.wasOk()) {
             queue.push_back(choosedFile);
-            curI++;
+            curI = queue.size() - 1;
             VideoProcessing();
+            if(curI > 0) back1->setEnabled(true);
+            front1->setEnabled(false);
         }
         else {
             //check = false;
@@ -343,6 +372,6 @@ void MainComponent::sliderValueChanged(Slider* s)
 void MainComponent::timerCallback()
 {
     slid->setValue(vid->getPlayPosition(), dontSendNotification);
-
+    //slid->createSliderTextBox(*slid);
 }
 

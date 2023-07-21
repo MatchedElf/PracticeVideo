@@ -1,7 +1,7 @@
 #include "CustomLaF.h"
-CustomLaF::CustomLaF()
+CustomLaF::CustomLaF() : LookAndFeel_V2()
 {
-
+    //
 }
 
 Label* CustomLaF::createSliderTextBox(Slider& slid)

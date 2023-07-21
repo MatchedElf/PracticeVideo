@@ -1,17 +1,39 @@
 #pragma once
 //
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../Include/CustomLaf.h"
-//
+#include "../Include/MySlider.h"
+/*!
+    \brief Класс, хранящий главную компоненту со всеми элементами программы
+
+    Все элементы программы хранятся в данном классе
+*/
 class MainComponent : public Component, public Button::Listener, public Slider::Listener, public Timer
 {
 public:
+    /*!
+        Конструктор
+    */
     MainComponent(void);
+    /*!
+        Деструктор
+    */
     ~MainComponent(void) override;
-    //
+    /*!
+        Функция для отрисовки фона компоненты
+    */
     void paint(Graphics&) override;
+    /*!
+        \brief Функция, вызываемая при изменении размеров компоненты
+
+        Функция перераспределяет положения и размеры элементов в зависимости от размера окна
+    */
     void resized(void) override;
-    void buttonClicked(Button*) override;
+    /*
+        Функция вызываемая при нажатии на какую либо кнопку
+
+        \param butt Нажатая кнопка
+    */
+    void buttonClicked(Button* butt) override;
     //void mouseDown(const MouseEvent& event);
     void VideoProcessing();
     void loadFile();
@@ -19,7 +41,6 @@ public:
     void timerCallback();
     //
 private:
-    CustomLaF LaF;
     std::vector<File> queue;
     int curI = -1;
     std::unique_ptr<FileChooser> myChooser;

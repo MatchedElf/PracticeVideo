@@ -3267,7 +3267,7 @@
     <ClCompile Include="..\..\Source\MainFrame.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\CustomLaF.cpp">
+    <ClCompile Include="..\..\Source\MySlider.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -6428,7 +6428,7 @@
     <ClInclude Include="..\..\Include\MainFrame.h">
       <Filter>Headers Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\CustomLaF.h">
+    <ClInclude Include="..\..\Include\MySlider.h">
       <Filter>Headers Files</Filter>
     </ClInclude>
   </ItemGroup>

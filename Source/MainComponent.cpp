@@ -79,9 +79,10 @@ MainComponent::MainComponent(void)
     addAndMakeVisible(logo);
     logo->setImage(ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("logop.png")));
     //
-    //chFile = new TextButton("Choose file");
-    //chFile->setButtonText("+");
-    //chFile->addListener(this);
+    FS = new TextButton("Choose file");
+    FS->setButtonText("+");
+    FS->addListener(this);
+    addAndMakeVisible(FS);
     // 
     Image chLogo = ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("addBut.png"));
     chFile1 = new ImageButton();
@@ -90,9 +91,11 @@ MainComponent::MainComponent(void)
     chFile1->addListener(this);
     //
     vid = new VideoComponent(true);
+    addAndMakeVisible(chFile1);
     addAndMakeVisible(vid);
     vid->setVisible(false);
-    addAndMakeVisible(chFile1);
+    vid->setAlwaysOnTop(false);
+    vid->toBack();
     f1 = File::getCurrentWorkingDirectory().getChildFile("Videoo.mp4");
     //check = f1.exists();
     //auto url = URL(f1);
@@ -104,6 +107,7 @@ MainComponent::MainComponent(void)
     speaker->setImage(speakerImage);
     //
     slid = new Slider();
+    //slid->createSliderTextBox(*slid);
     slid->setSliderStyle(Slider::LinearHorizontal);
     slid->setTextBoxStyle(Slider::TextBoxLeft, true, 50, 20);
     slid->setNumDecimalPlacesToDisplay(0);
@@ -158,6 +162,7 @@ MainComponent::~MainComponent(void)
     deleteAndZero(logo);
     deleteAndZero(vid);
     deleteAndZero(pop1);
+    deleteAndZero(FS);
     deleteAndZero(chFile1);
     deleteAndZero(myLayout);
     deleteAndZero(slid);
@@ -167,6 +172,7 @@ MainComponent::~MainComponent(void)
     //slid->setLookAndFeel(nullptr);
     myChooser.reset();
     queue.clear();
+    setLookAndFeel(nullptr);
 }
 //
 void MainComponent::paint(Graphics& g)
@@ -183,40 +189,66 @@ void MainComponent::paint(Graphics& g)
 //
 void MainComponent::resized(void)
 {
-    long propW1 = proportionOfWidth(0.1);
-    long propWv1 = proportionOfWidth(0.075);
-    long propH1 = proportionOfHeight(0.1);
-    long propH6 = proportionOfHeight(0.7);
-    long propH8 = proportionOfHeight(0.85);
-    long propW8 = proportionOfWidth(0.85);
-    long centreW = getWidth() / 2;
-    long centreH = getHeight() / 2;
-    //long height = getHeight();
-    int dist = 20;
-    //if (check == true) {
-    //    double sec = vid->getVideoDuration();
-    //    slid->setRange(0, sec, 1);
-    //}
+    if (fullS == false) {
+        long propW1 = proportionOfWidth(0.1);
+        long propWv1 = proportionOfWidth(0.075);
+        long propH1 = proportionOfHeight(0.1);
+        long propH6 = proportionOfHeight(0.7);
+        long propH8 = proportionOfHeight(0.85);
+        long propW8 = proportionOfWidth(0.85);
+        long centreW = getWidth() / 2;
+        long centreH = getHeight() / 2;
+        //long height = getHeight();
+        int dist = 20;
+        //if (check == true) {
+        //    double sec = vid->getVideoDuration();
+        //    slid->setRange(0, sec, 1);
+        //}
 
-    //Component* comps[]{play, back, front};
-    //if(check == true) title->setText("true", dontSendNotification);
-    //else if(check == false) title->setText("false", dontSendNotification);
-    //MainLabel->setBounds(getWidth() / 2 - 50, getHeight() / 2 - 150, 100, 100);
-    chFile1->setBounds(propW1 * 9 - propH1, 0, propH1, propH1);
-    play1->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
-    pause->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
-    back1->setBounds(centreW - propH1 / 2 - propH1 - dist, propH8, propH1, propH1);
-    front1->setBounds(centreW + propH1 / 2 + dist, propH8, propH1, propH1);
-    title->setBounds(propW1 - propH1, 0, 5 * propH1, propH1);
-    logo->setBounds(centreW - 100, centreH - 150, 200, 200);
-    pop1->setBounds(propWv1 + propW8 - propH1, propH8, propH1, propH1);
-    //slid->setValue(vid->getPlayPosition());
-    slid->setBounds(propWv1, propH1 * 8 - dist, propW8, propH1);
-    vol->setBounds(propW1 * 9, centreH - propH6 / 4, propH1, propH6 / 2);
-    speaker->setBounds(propW1 * 9 + dist / 2, centreH - propH6 / 3 - dist - dist / 4, propH1, propH1);
-    speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH8, 2 * propH1, propH1);
-    vid->setBounds(propWv1, propH1, propW8, propH6);
-    //myLayout->layOutComponents(comps, 3, 150, 350, proportionOfWidth(0.5), proportionOfHeight(0.1), false, true);
+        //Component* comps[]{play, back, front};
+        //if(check == true) title->setText("true", dontSendNotification);
+        //else if(check == false) title->setText("false", dontSendNotification);
+        //MainLabel->setBounds(getWidth() / 2 - 50, getHeight() / 2 - 150, 100, 100);
+        FS->setBounds(propW1 - propH1, 0, propH1, propH1);
+        chFile1->setBounds(propW1 * 9 - propH1, 0, propH1, propH1);
+        play1->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
+        pause->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
+        back1->setBounds(centreW - propH1 / 2 - propH1 - dist, propH8, propH1, propH1);
+        front1->setBounds(centreW + propH1 / 2 + dist, propH8, propH1, propH1);
+        title->setBounds(propW1 - propH1, 0, 5 * propH1, propH1);
+        logo->setBounds(centreW - 100, centreH - 150, 200, 200);
+        pop1->setBounds(propWv1 + propW8 - propH1, propH8, propH1, propH1);
+        //slid->setValue(vid->getPlayPosition());
+        slid->setBounds(propWv1, propH1 * 8 - dist / 2, propW8, propH1);
+        vol->setBounds(propW1 * 9, centreH - propH6 / 4, propH1, propH6 / 2);
+        speaker->setBounds(propW1 * 9 + dist / 2, centreH - propH6 / 3 - dist - dist / 4, propH1, propH1);
+        speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH8, 2 * propH1, propH1);
+        vid->setBounds(propWv1, propH1, propW8, propH6);
+        //myLayout->layOutComponents(comps, 3, 150, 350, proportionOfWidth(0.5), proportionOfHeight(0.1), false, true);
+    }
+    else {
+        long propW1 = proportionOfWidth(0.1);
+        long propW10 = proportionOfWidth(0.05);
+        long propWv1 = proportionOfWidth(0.075);
+        long propH1 = proportionOfHeight(0.1);
+        long propH10 = proportionOfHeight(0.05);
+        long propH6 = proportionOfHeight(0.7);
+        long propH8 = proportionOfHeight(0.85);
+        long propW8 = proportionOfWidth(0.85);
+        long centreW = getWidth() / 2;
+        long centreH = getHeight() / 2;
+        int dist = 10;
+        FS->setBounds(propW1 - propH1, 0, propH1, propH1);
+        back1->setBounds(centreW - propH10 / 2 - propH10 - dist, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        play1->setBounds(centreW - propH10 / 2, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        pause->setBounds(centreW - propH10 / 2, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        front1->setBounds(centreW + propH10 / 2 + dist, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        pop1->setBounds(propWv1 + propW8 - propH1, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        vid->setBounds(0, 0, proportionOfWidth(1.0), propH1 * 9.5);
+        speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH1 * 9.5 + propH10 / 5, 2 * propH1, propH10 / 3);
+        slid->setBounds(propWv1, propH1 * 9.5, propW8, propH10 / 3);
+    }
+
 }
 //
 void MainComponent::buttonClicked(Button* butt)
@@ -273,18 +305,29 @@ void MainComponent::buttonClicked(Button* butt)
             .withPreferredPopupDirection(PopupMenu::Options::PopupDirection(0))
             .withTargetComponent(pop1),
             [this](int result) {
-                back1->setEnabled(true);
-                front1->setEnabled(true);
-                play1->setVisible(true);
-                pause->setVisible(false);
-                curI = result - 1;
-                title->setText(queue[curI].getFileName(), dontSendNotification);
-                vid->load(queue[curI]);
-                slid->setValue(0);
-                if (curI == 0) back1->setEnabled(false);
-                if(curI == (queue.size() - 1)) front1->setEnabled(false);
-                VideoProcessing();
+                if (result != 0) {
+                    back1->setEnabled(true);
+                    front1->setEnabled(true);
+                    play1->setVisible(true);
+                    pause->setVisible(false);
+                    curI = result - 1;
+                    title->setText(queue[curI].getFileName(), dontSendNotification);
+                    vid->load(queue[curI]);
+                    slid->setValue(0);
+                    if (curI == 0) back1->setEnabled(false);
+                    if (curI == (queue.size() - 1)) front1->setEnabled(false);
+                    VideoProcessing();
+                }
             });
+    }
+    else if (butt == FS) {
+        if (fullS == true) {
+            fullS = false;
+        }
+        else {
+            fullS = true;
+        }
+        resized();
     }
 }
 //
@@ -346,6 +389,8 @@ void MainComponent::loadFile()
             VideoProcessing();
             if(curI > 0) back1->setEnabled(true);
             front1->setEnabled(false);
+            play1->setVisible(true);
+            pause->setVisible(false);
         }
         else {
             //check = false;

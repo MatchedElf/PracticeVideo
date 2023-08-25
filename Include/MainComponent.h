@@ -58,7 +58,7 @@ private:
     //TextButton* front;
     //TextButton* pop;
     ImageButton* pop1;
-    TextButton* FS;
+    ImageButton* FS;
     ImageButton* chFile1;
     VideoComponent* vid;
     PopupMenu* menu;

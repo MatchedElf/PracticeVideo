@@ -79,8 +79,9 @@ MainComponent::MainComponent(void)
     addAndMakeVisible(logo);
     logo->setImage(ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("logop.png")));
     //
-    FS = new TextButton("Choose file");
-    FS->setButtonText("+");
+    Image fsLogo = ImageCache::getFromFile(File::getCurrentWorkingDirectory().getChildFile("fsBut.png"));
+    FS = new ImageButton();
+    FS->setImages(false, true, true, fsLogo, 1, Colours::transparentWhite, fsLogo, 0.3, Colours::transparentWhite, fsLogo, 1, Colours::transparentWhite);
     FS->addListener(this);
     addAndMakeVisible(FS);
     // 
@@ -190,6 +191,7 @@ void MainComponent::paint(Graphics& g)
 void MainComponent::resized(void)
 {
     if (fullS == false) {
+        title->setVisible(true);
         long propW1 = proportionOfWidth(0.1);
         long propWv1 = proportionOfWidth(0.075);
         long propH1 = proportionOfHeight(0.1);
@@ -209,7 +211,7 @@ void MainComponent::resized(void)
         //if(check == true) title->setText("true", dontSendNotification);
         //else if(check == false) title->setText("false", dontSendNotification);
         //MainLabel->setBounds(getWidth() / 2 - 50, getHeight() / 2 - 150, 100, 100);
-        FS->setBounds(propW1 - propH1, 0, propH1, propH1);
+        FS->setBounds(propWv1 + propW8 - 2 * propH1 - dist, propH8, propH1, propH1);
         chFile1->setBounds(propW1 * 9 - propH1, 0, propH1, propH1);
         play1->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
         pause->setBounds(centreW - propH1 / 2, propH8, propH1, propH1);
@@ -227,6 +229,7 @@ void MainComponent::resized(void)
         //myLayout->layOutComponents(comps, 3, 150, 350, proportionOfWidth(0.5), proportionOfHeight(0.1), false, true);
     }
     else {
+        title->setVisible(false);
         long propW1 = proportionOfWidth(0.1);
         long propW10 = proportionOfWidth(0.05);
         long propWv1 = proportionOfWidth(0.075);
@@ -238,8 +241,9 @@ void MainComponent::resized(void)
         long centreW = getWidth() / 2;
         long centreH = getHeight() / 2;
         int dist = 10;
-        FS->setBounds(propW1 - propH1, 0, propH1, propH1);
+        FS->setBounds(propWv1 + propW8 - 2 * propH1 - dist, propH1 * 9.5 + propH10 / 5, propH10, propH10);
         back1->setBounds(centreW - propH10 / 2 - propH10 - dist, propH1 * 9.5 + propH10 / 5, propH10, propH10);
+        chFile1->setBounds(propW1 * 9.5 + dist / 2, 0, propH10, propH10);
         play1->setBounds(centreW - propH10 / 2, propH1 * 9.5 + propH10 / 5, propH10, propH10);
         pause->setBounds(centreW - propH10 / 2, propH1 * 9.5 + propH10 / 5, propH10, propH10);
         front1->setBounds(centreW + propH10 / 2 + dist, propH1 * 9.5 + propH10 / 5, propH10, propH10);
@@ -247,6 +251,8 @@ void MainComponent::resized(void)
         vid->setBounds(0, 0, proportionOfWidth(1.0), propH1 * 9.5);
         speed->setBounds(centreW - 3 * propH1 - propH1 / 2 - 3 * dist, propH1 * 9.5 + propH10 / 5, 2 * propH1, propH10 / 3);
         slid->setBounds(propWv1, propH1 * 9.5, propW8, propH10 / 3);
+        vol->setBounds(propW1 * 9.5, centreH - propH6 / 4, propH10, propH6 / 2);
+        speaker->setBounds(propW1 * 9.5 + dist / 2, centreH - propH6 / 3 - dist - dist / 4, propH10, propH10);
     }
 
 }
